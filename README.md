@@ -21,6 +21,7 @@
     - Not a fan of using an edgelist; an adjacency matrix is alright due to the undirected and dense graph, however its main strength seems to lie in querying
     - Parsing neighbours seems better with the adjacency list in this case (correct me if I'm wrong) which might not matter now but the decision making is important for other tasks
   - [x] (Optional) COLOUR
+  - [] Fix shortest path algorithm by checking more of the search space
 
 ## Final comments and resources used
   Overall this was fairly simple, the main annoyance was "cleaning" the data from the search in order to get the shortest path. This was done by checking "parent" neighbours. While I am confident in my reasoning I am not as confident how I coded it but it works! I can revise it at another time if I feel like it. It was interesting learning to apply these data types in Ruby!

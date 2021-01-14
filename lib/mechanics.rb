@@ -24,12 +24,16 @@ module Mechanics
       parent_connections = graph.adjacency_list[parent]
       vert_connections = graph.adjacency_list[vert]
       # puts "Parent #{parent}\n\tConnections: #{parent_connections}\n\tVertex: #{vert}\n\tPath: #{path}"
-      if (parent_connections.include? vert) && mutual_connections?(path, vert_connections, parent)
+      if (parent_connections.include? vert) && mutual_connections?(path, vert_connections, parent) && closer(parent, vert)
         # print "\e[1m#{vert}\e[0m belongs in \e[32mparent\e[0m \e[1m#{parent}\e[0m\n\t\e[31mpath\e[0m (#{path}) has mutual connections with \e[33mvert\e[0m (#{vert_connections})\n"
         parent = vert
         next(true)
       end
     end
+  end
+
+  def closer(parent, vert)
+    (vert - goal).abs < (parent - goal).abs
   end
 
   def mutual_connections?(path, vert_connections, parent)
@@ -45,9 +49,11 @@ module Mechanics
   def convert_label(label)
     row = label / 8
     col = label % 8
+
     return [row, col] unless col.zero?
 
-    [row, 8]
+
+    [row-1, 8]
   end
 
   def legal_moves(position)

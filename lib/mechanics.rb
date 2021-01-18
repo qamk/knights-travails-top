@@ -1,44 +1,62 @@
 # frozen-string-literal: true
 
-# Methods for interacting with (but not creating) the graph 
+# Methods for interacting with (but not creating) the graph
 module Mechanics
+  # Selects vertices which have children in the current path
   def connected_nodes(traversed)
     index = 0
     traversed.select do |vert|
       next(true) if [start_position, goal].include? vert
 
-      current_connections = graph.adjacency_list[vert]
+      vert_connections = graph.adjacency_list[vert]
       index += 1
       traversed[index..-1].any? do |visited_verts|
-        # puts "Vert in question: \e[31m#{vert}\e[0m\n\tInner Vert: \e[32m#{visited_verts}\e[0m\n\tSearching: \e[33m#{traversed[index..-1]}\e[0m\n\tComparing to: \e[34m#{current_connections}\e[0m\n\tInner Choice: \e[35m#{current_connections.include? visited_verts}\e[0m"
-        current_connections.include? visited_verts
+        vert_connections.include? visited_verts
       end
     end
+  end
+
+  def find_knights_path(path)
+    unclean_path = path.clone
+    cleaned_path = [unclean_path.shift]
+    loop do
+      cleaned_path = clean(unclean_path)
+      # puts "\e[33mCleaned?\e[0m: #{cleaned_path}"
+      break if cleaned_path.include? goal
+
+      to_pop_from_path = cleaned_path.pop
+      unclean_path.delete(to_pop_from_path)
+    end
+    # print "\e[91mPath\e[0m: #{cleaned_path}\n"
+    cleaned_path
   end
 
   def clean(path)
     parent = path[0]
     path.select do |vert|
-      next(true) if [start_position, goal].include? vert
+      next(true) if parent == vert
 
-      parent_connections = graph.adjacency_list[parent]
-      vert_connections = graph.adjacency_list[vert]
+      parent_connections = closer_only(graph.adjacency_list[parent], parent)
+      vert_connections = closer_only(graph.adjacency_list[vert], vert)
       # puts "Parent #{parent}\n\tConnections: #{parent_connections}\n\tVertex: #{vert}\n\tPath: #{path}"
-      if (parent_connections.include? vert) && mutual_connections?(path, vert_connections, parent) && closer(parent, vert)
-        # print "\e[1m#{vert}\e[0m belongs in \e[32mparent\e[0m \e[1m#{parent}\e[0m\n\t\e[31mpath\e[0m (#{path}) has mutual connections with \e[33mvert\e[0m (#{vert_connections})\n"
+      if (parent_connections.include? vert) && (mutual_connections?(vert_connections, path, parent) || vert == goal)
         parent = vert
         next(true)
       end
     end
   end
 
-  def closer(parent, vert)
-    (vert - goal).abs < (parent - goal).abs
+  def closer_only(path, active_vert)
+    path.filter { |vert| closer(active_vert, vert) }
   end
 
-  def mutual_connections?(path, vert_connections, parent)
-    path.any? do |vert|
-      vert_connections.include? vert unless vert == parent
+  def closer(parent, vert, destination = goal)
+    (vert - destination).abs < (parent - destination).abs
+  end
+
+  def mutual_connections?(knight_path, reference_path, parent)
+    knight_path.any? do |vert|
+      reference_path.include? vert unless vert == parent
     end
   end
 
@@ -49,11 +67,9 @@ module Mechanics
   def convert_label(label)
     row = label / 8
     col = label % 8
-
     return [row, col] unless col.zero?
 
-
-    [row-1, 8]
+    [row - 1, 8]
   end
 
   def legal_moves(position)
@@ -68,5 +84,4 @@ module Mechanics
 
     position.all? { |pos| pos.between?(1, 8) }
   end
-
 end

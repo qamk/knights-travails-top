@@ -28,7 +28,7 @@ class Graph
 
       active_vertex = queue.shift
       path << active_vertex
-      vertex_connections = adjacency_list[active_vertex] 
+      vertex_connections = adjacency_list[active_vertex]
       # print "\e[33m#{active_vertex}: \e[34m#{vertex_connections}\e[0m\n"
       vertex_connections.each do |vert|
         if !visited.include? vert

@@ -16,10 +16,14 @@ class Knight
     @board = Board.new(8).board
     @graph = Graph.new
     create_board_graph
-    knights_move.each_with_index { |label, index| print "    #{index + 1} ---> #{color_path(label)}" }
+    display_results
   end
 
-  def color_path(label)
+  def display_results
+    knights_move.each_with_index { |label, index| print "    #{index + 1} ---> #{colour_path(label)}" }
+  end
+
+  def colour_path(label)
     if label == goal
       "\t\e[38;5;#{rand(2..15)}m#{raw_goal}\e[0m\n"
     else
@@ -49,10 +53,11 @@ class Knight
   def knights_move
     traversed = graph.breadth_first_traversal(start_position, goal)
     pathways = connected_nodes(traversed)
-    knights_path = clean(pathways)
+    knights_path = find_knights_path(pathways)
     # p "pre-clean: #{pathways}"
     # puts "\e[1;38;5;1mFINAL\e[0m"
-    # p knights_path
+    # print "#{knights_path}\n\n"
+    print "From \e[#{rand(31..35)}m#{convert_label(start_position)}\e[0m to  \e[#{rand(31..35)}m#{raw_goal}\e[0m\n\n"
     knights_path
   end
 end

@@ -47,7 +47,7 @@ module Mechanics
   end
 
   def closer_only(path, active_vert)
-    path.filter { |vert| closer(active_vert, vert) }
+    path.select { |vert| closer(active_vert, vert) }
   end
 
   def closer(parent, vert, destination = goal)

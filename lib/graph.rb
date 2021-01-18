@@ -19,13 +19,11 @@ class Graph
     adjacency_list[point_b].push(point_a)
   end
 
-  def breadth_first_traversal(vertex, goal)
+  def breadth_first_traversal(vertex)
     visited = [vertex] # undirected
     path = []
     queue = [vertex]
     until queue.empty?
-      return path << goal if visited.include? goal
-
       active_vertex = queue.shift
       path << active_vertex
       vertex_connections = adjacency_list[active_vertex]
@@ -37,5 +35,6 @@ class Graph
         end
       end
     end
+    path
   end
 end

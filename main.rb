@@ -27,6 +27,7 @@ class KnightsTravails
   end
 
   def prompt
+    puts "A square/position is represented as \e[1m[row, coloumn]\e[0m so [3, 5] is 3 down and 5 across\n"
     print 'Enter coordinates for the starting position (point A, e.g. \'5, 7\'): '
     point_a = gets.chomp.strip.split(',').map(&:to_i)
     print 'Enter coordinates for the destination position (point B e.g. \'2, 1\'): '

@@ -19,7 +19,13 @@ class Knight
     display_results
   end
 
+  def no_move
+    puts 'No move necessary...'
+  end
+
   def display_results
+    return no_move if goal == start_position
+
     knights_move.each_with_index { |label, index| print "    #{index + 1} ---> #{colour_path(label)}" }
   end
 
@@ -51,13 +57,15 @@ class Knight
   end
 
   def knights_move
-    traversed = graph.breadth_first_traversal(start_position, goal)
+    traversed = graph.breadth_first_traversal(start_position)
     pathways = connected_nodes(traversed)
     knights_path = find_knights_path(pathways)
     # p "pre-clean: #{pathways}"
     # puts "\e[1;38;5;1mFINAL\e[0m"
-    # print "#{knights_path}\n\n"
+    # print "#{[start_position] + knights_path}\n\n"
     print "From \e[#{rand(31..35)}m#{convert_label(start_position)}\e[0m to  \e[#{rand(31..35)}m#{raw_goal}\e[0m\n\n"
     knights_path
   end
 end
+
+# Knight.new([rand(1..8),rand(1..8)], [rand(1..8),rand(1..8)])
